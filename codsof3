@@ -1,0 +1,98 @@
+#include <iostream>
+
+using namespace std;
+
+void displayBoard(char board[]);
+bool checkWin(char board[], char currentPlayer);
+bool checkDraw(char board[]);
+void playGame();
+
+int main() {
+   char playAgain = 'y';
+
+   while (playAgain == 'y') {
+       playGame();
+
+       cout << "Do you want to play again? (y/n): ";
+       cin >> playAgain;
+   }
+
+   cout << "Thanks for playing!" << endl;
+
+   return 0;
+}
+
+void playGame() {
+   char board[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}; 
+   char currentPlayer = 'X';
+   int move;
+
+   bool gameOver = false;
+
+   while (!gameOver) {
+       displayBoard(board);
+
+       cout << currentPlayer << "'s turn. Enter your move (1-9): ";
+       cin >> move;
+
+       // Input validation
+       while (move < 1 || move > 9 || board[move - 1] == 'X' || board[move - 1] == 'O') {
+           cout << "Invalid move. Please enter a valid move (1-9): ";
+           cin >> move;
+       }
+
+       board[move - 1] = currentPlayer;
+
+       if (checkWin(board, currentPlayer)) {
+           displayBoard(board);
+           cout << currentPlayer << " wins!" << endl;
+           gameOver = true;
+       } else if (checkDraw(board)) {
+           displayBoard(board);
+           cout << "It's a draw!" << endl;
+           gameOver = true;
+       } else {
+           currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+       }
+   }
+}
+
+void displayBoard(char board[]) {
+   cout << " " << board[0] << " | " << board[1] << " | " << board[2] << endl;
+   cout << "-----------" << endl;
+   cout << " " << board[3] << " | " << board[4] << " | " << board[5] << endl;
+   cout << "-----------" << endl;
+   cout << " " << board[6] << " | " << board[7] << " | " << board[8] << endl;
+}
+
+bool checkWin(char board[], char currentPlayer) {
+   for (int i = 0; i < 3; i++) {
+       if (board[i * 3] == currentPlayer && board[i * 3 + 1] == currentPlayer && board[i * 3 + 2] == currentPlayer) {
+           return true;
+       }
+   }
+
+   for (int i = 0; i < 3; i++) {
+       if (board[i] == currentPlayer && board[i + 3] == currentPlayer && board[i + 6] == currentPlayer) {
+           return true;
+       }
+   }
+
+   if (board[0] == currentPlayer && board[4] == currentPlayer && board[8] == currentPlayer) {
+       return true;
+   }
+   if (board[2] == currentPlayer && board[4] == currentPlayer && board[6] == currentPlayer) {
+       return true;
+   }
+
+   return false;
+}
+
+bool checkDraw(char board[]) {
+   for (int i = 0; i < 9; i++) {
+       if (board[i] != 'X' && board[i] != 'O') {
+           return false; 
+       }
+   }
+   return true;
+}
